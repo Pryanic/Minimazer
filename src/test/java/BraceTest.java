@@ -30,19 +30,28 @@ public class BraceTest {
     @Test
     public void additionalBrace_4(){
         assertEquals("You input string contains incorrect brace sequence",
-                Main.minimaize("(a ANB b")
+                Main.minimaize("(a AND b")
         );
     }
     @Test
     public void additionalBrace_5(){
-        assertEquals("NOT b",
-                Main.minimaize("(  NOT b  )")
+        assertEquals("Expression contains brace around operations is incorrect",
+                Main.minimaize("(NOT  )OR (a AND b)")
         );
     }
+
     @Test
     public void additionalBrace_6(){
-        assertEquals("NOT TRUE",
-                Main.minimaize("(  NOT TRUE  )")
+        assertEquals("Expression contains brace around operations is incorrect",
+                Main.minimaize("((A AND B)OR (OR  )AND (a AND b)AND C)")
         );
     }
+
+    @Test
+    public void additionalBrace_7(){
+        assertEquals("Expression contains brace around operations is incorrect",
+                Main.minimaize("((A AND B)AND (A OR B (((AND)))OR C  )AND (a AND b)AND C)")
+        );
+    }
+
 }

@@ -10,27 +10,47 @@ import static org.junit.Assert.assertEquals;
 public class BraceRemoverTest {
     @Test
     public void removeBrace_1(){
-        assertEquals("You input empty string",
+        assertEquals("Incorrect sequence of brace",
                 Main.minimaize("( ( ))")
         );
     }
     @Test
     public void removeBrace_2(){
-        assertEquals("You input empty string",
-                Main.minimaize("(())()()(()()())")
+        assertEquals("Incorrect sequence of brace",
+                Main.minimaize("((a AND b))()()(()()())")
         );
     }
     @Test
     public void removeBrace_3(){
-        assertEquals("You input empty string",
+        assertEquals("Incorrect sequence of brace",
                 Main.minimaize("((((())()))()(()()()))")
         );
     }
 
     @Test
     public void removeBrace_4(){
-        assertEquals("You input empty string",
-                Main.minimaize("((()))()()((()))((()()((()()))))")
+        assertEquals("Incorrect sequence of brace",
+                Main.minimaize("(((D AND C)))(A OR B)(D OR F)OR(((K AND T)))((()()((()()))))")
+        );
+    }
+    @Test
+    public void removeBrace_5(){
+        assertEquals("Incorrect sequence of brace",
+                Main.minimaize("()()")
+        );
+    }
+
+    @Test
+    public void removeBrace_6(){
+        assertEquals("Incorrect sequence of brace",
+                Main.minimaize("((()))()")
+        );
+    }
+
+    @Test
+    public void removeBrace_7(){
+        assertEquals("Expression contains brace around operations is incorrect",
+                Main.minimaize("(A AND B)NOT (x OR Y)")
         );
     }
 }

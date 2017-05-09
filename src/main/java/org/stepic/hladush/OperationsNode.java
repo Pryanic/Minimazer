@@ -16,21 +16,23 @@ public abstract class OperationsNode extends ProcessedNode {
 
     protected abstract void addOrNode(ORNode node);
 
-    protected abstract void addTrueNode(Node node);
+    protected abstract void addTrueNode();
 
     protected abstract void addChild(Node node);
 
     protected abstract void addAndNode(ANDNode node);
 
-    protected abstract void addFalseNode(Node node);
+    protected abstract void addFalseNode();
+
+    protected abstract void addNotNode(NOTNode node);
 
     protected void add(Node node) {
         switch (node.getValue()) {
             case "TRUE":
-                addTrueNode(node);
+                addTrueNode();
                 break;
             case "FALSE":
-                addFalseNode(node);
+                addFalseNode();
                 break;
             case "AND":
                 addAndNode((ANDNode) node);
@@ -38,6 +40,8 @@ public abstract class OperationsNode extends ProcessedNode {
             case "OR":
                 addOrNode((ORNode) node);
                 break;
+            case "NOT":
+                addNotNode((NOTNode)node);
             default:
                 addChild(node);
         }

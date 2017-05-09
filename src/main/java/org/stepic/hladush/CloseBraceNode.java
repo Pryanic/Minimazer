@@ -21,7 +21,7 @@ public class CloseBraceNode extends BraceNode {
     public void calculate(Deque<Node> operands, Deque<ProcessedNode> operations) {
         ProcessedNode processedNode;
         while (!OpenBraceNode.VALUE.equals((processedNode = operations.pollLast()).getValue())) {
-            processedNode.process(operands, operations);
+            processedNode.process(operands);
         }
     }
 

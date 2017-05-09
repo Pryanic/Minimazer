@@ -7,16 +7,18 @@ import java.util.*;
  * @since 05.05.17.
  */
 public class ORNode extends BinaryOperationsNode {
-    public static final String VALUE="OR";
+    public static final String VALUE = "OR";
     private boolean trueAdd;
-    private Set<Node> children = new TreeSet<>((node1, node2) -> node1.toString().compareTo(node2.toString()));
+
+    private Set<Node> children = new TreeSet<>(Comparator.comparing(Object::toString));
+    private Set<Node> childrenWithNot = new TreeSet<>(Comparator.comparing(Object::toString));
 
     public ORNode() {
         super(VALUE, 1);
     }
 
     @Override
-    public void process(Deque<Node> operands, Deque<ProcessedNode> operations) {
+    public void process(Deque<Node> operands) {
         if (operands.size() < 2) {
             throw new IllegalArgumentException("Not enough operands for operations");
         }
@@ -33,40 +35,62 @@ public class ORNode extends BinaryOperationsNode {
     @Override
     protected void addChild(Node node) {
         if (!trueAdd) {
-            children.add(node);
+            if (childrenWithNot.contains(node)) {
+                addTrueNode();
+            } else {
+                children.add(node);
+            }
         }
     }
 
 
     protected void addAndNode(ANDNode node) {
-        if(node.getChildren().size()==1){
+        if (node.getChildren().size() == 1) {
             add(node.getChildren().iterator().next());
-        }else {
+        } else {
             addChild(node);
         }
     }
 
     @Override
-    protected void addFalseNode(Node node) {
+    protected void addFalseNode() {
+        //empty because  false OR value =value
+    }
 
+    @Override
+    protected void addNotNode(NOTNode node) {
+        if (children.contains(node.getSingleChild())) {
+            addTrueNode();
+        } else {
+            childrenWithNot.add(node.getSingleChild());
+            addChild(node);
+        }
     }
 
     @Override
     protected void addOrNode(ORNode orNode) {
         if (orNode.isTrueAdd()) {
-            trueAdd = true;
-            children.clear();
+            addTrueNode();
+            childrenWithNot.clear();
         } else {
-            children.addAll(orNode.getChildren());
+            for (Node node : orNode.getChildren()) {
+                if (childrenWithNot.contains(node)) {
+                    addTrueNode();
+                    break;
+                } else {
+                    children.add(node);
+                }
+            }
+
         }
     }
 
     @Override
-    protected void addTrueNode(Node trueNode) {
+    protected void addTrueNode() {
         if (!trueAdd) {
             trueAdd = true;
             children.clear();
-            children.add(trueNode);
+            childrenWithNot.clear();
         }
     }
 
@@ -81,16 +105,19 @@ public class ORNode extends BinaryOperationsNode {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        if(children.size()==1){
-            return  children.toArray()[0].toString();
+        if (isTrueAdd()) {
+            return TrueNode.VALUE;
         }
-        boolean firstAdded=false;
+        StringBuilder sb = new StringBuilder();
+        if (children.size() == 1) {
+            return children.toArray()[0].toString();
+        }
+        boolean firstAdded = false;
         for (Node child : children) {
-            if(firstAdded){
+            if (firstAdded) {
                 sb.append("OR ");
-            }else{
-                firstAdded=true;
+            } else {
+                firstAdded = true;
             }
             sb.append(child.toString());
             sb.append(" ");
@@ -98,7 +125,6 @@ public class ORNode extends BinaryOperationsNode {
 
         return sb.toString().trim();
     }
-
 
 
 }

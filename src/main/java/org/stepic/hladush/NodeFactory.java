@@ -8,8 +8,8 @@ public class NodeFactory {
 
     public static Node createNode(String value) {
         switch (value) {
-//            case "NOT":
-//                return new NOTNode();
+            case NOTNode.VALUE:
+                return new NOTNode();
             case TrueNode.VALUE:
                 return TrueNode.getInstance();
             case FalseNode.VALUE:

@@ -24,7 +24,7 @@ public class NodeBuilder {
             node.calculate(operands, operations);
         }
         while (!operations.isEmpty()) {
-            operations.pollLast().process(operands, operations);
+            operations.pollLast().process(operands);
         }
         if (operands.size() > 1) {
             throw new IllegalArgumentException("Incorrect state");

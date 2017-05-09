@@ -17,7 +17,7 @@ public abstract class BinaryOperationsNode extends OperationsNode {
         } else {
             while (!operations.isEmpty()
                     && operations.peekLast().getPriority() >= this.getPriority()) {
-                operations.pollLast().process(operands, operations);
+                operations.pollLast().process(operands);
             }
             operations.add(this);
         }

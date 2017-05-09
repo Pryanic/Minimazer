@@ -1,6 +1,4 @@
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.stepic.hladush.Main;
 
 import static org.junit.Assert.assertEquals;

@@ -9,21 +9,22 @@ import java.util.*;
 public class ANDNode extends BinaryOperationsNode {
     public static final String VALUE = "AND";
 
-    private boolean containsFalseInChildren;
-    private Set<Node> children = new TreeSet<>((node1, node2) -> node1.toString().compareTo(node2.toString()));
+    private boolean isFalseAdded;
+    private Set<Node> children = new TreeSet<>(Comparator.comparing(Object::toString));
+    private Set<Node> childrenWithNot = new TreeSet<>(Comparator.comparing(Object::toString));
 
     public ANDNode() {
         super(VALUE, 2);
     }
 
     @Override
-    public void process(Deque<Node> operands, Deque<ProcessedNode> operations) {
+    public void process(Deque<Node> operands) {
         if (operands.size() < 2) {
             throw new IllegalArgumentException("Not enough operands for operations");
         }
         add(operands.pollLast());
         add(operands.pollLast());
-        if (containsFalseInChildren) {
+        if (isFalseAdded) {
             operands.add(FalseNode.getInstance());
         } else {
             operands.add(this);
@@ -32,6 +33,9 @@ public class ANDNode extends BinaryOperationsNode {
 
     @Override
     public String toString() {
+        if (isFalseAdded) {
+            return FalseNode.VALUE;
+        }
         StringBuilder sb = new StringBuilder();
         boolean firstAdded = false;
         if (children.size() == 1) {
@@ -39,14 +43,14 @@ public class ANDNode extends BinaryOperationsNode {
         }
         for (Node child : children) {
             if (firstAdded) {
-                sb.append("AND ");
+                sb.append(VALUE).append(" ");
             } else {
                 firstAdded = true;
             }
-            if ("OR".equals(child.getValue())) {
-                sb.append("(");
+            if (ORNode.VALUE.equals(child.getValue())) {
+                sb.append(OpenBraceNode.VALUE);
                 sb.append(child.toString());
-                sb.append(") ");
+                sb.append(CloseBraceNode.VALUE).append(" ");
             } else {
                 sb.append(child.toString());
                 sb.append(" ");
@@ -58,21 +62,37 @@ public class ANDNode extends BinaryOperationsNode {
     }
 
     @Override
-    protected void addFalseNode(Node falseNode) {
-        if (!containsFalseInChildren) {
-            containsFalseInChildren = true;
+    protected void addFalseNode() {
+        if (!isFalseAdded) {
+            isFalseAdded = true;
             children.clear();
-            children.add(falseNode);
+        }
+    }
+
+    @Override
+    protected void addNotNode(NOTNode node) {
+        if (children.contains(node.getSingleChild())) {
+            addFalseNode();
+        } else {
+            childrenWithNot.add(node.getSingleChild());
+            addChild(node);
         }
     }
 
     @Override
     protected void addAndNode(ANDNode andNode) {
-        if (andNode.isContainsFalseInChildren()) {
-            containsFalseInChildren = true;
-            children.clear();
+        if (andNode.isFalseAdded()) {
+            addFalseNode();
         } else {
-            children.addAll(andNode.getChildren());
+            for (Node node : andNode.getChildren()) {
+                if (childrenWithNot.contains(node)) {
+                    addFalseNode();
+                    break;
+                } else {
+                    children.add(node);
+                }
+            }
+
         }
     }
 
@@ -86,15 +106,18 @@ public class ANDNode extends BinaryOperationsNode {
     }
 
     @Override
-    protected void addTrueNode(Node node) {
+    protected void addTrueNode() {
         //ignored because TRUE AND value = value
     }
 
     @Override
     protected void addChild(Node node) {
-        if (!containsFalseInChildren) {
-            children.add(node);
-
+        if (!isFalseAdded) {
+            if (childrenWithNot.contains(node)) {
+                addFalseNode();
+            } else {
+                children.add(node);
+            }
         }
     }
 
@@ -103,7 +126,7 @@ public class ANDNode extends BinaryOperationsNode {
         return Collections.unmodifiableSet(children);
     }
 
-    private boolean isContainsFalseInChildren() {
-        return containsFalseInChildren;
+    private boolean isFalseAdded() {
+        return isFalseAdded;
     }
 }

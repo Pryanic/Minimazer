@@ -16,7 +16,7 @@ public abstract class BraceNode extends ProcessedNode {
     }
 
     @Override
-    public void process(Deque<Node> operands, Deque<ProcessedNode> operations) {
+    public void process(Deque<Node> operands) {
         throw new UnsupportedOperationException("This operations doesn't support");
     }
 }

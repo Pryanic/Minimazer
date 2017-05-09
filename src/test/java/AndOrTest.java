@@ -14,6 +14,10 @@ public class AndOrTest {
     public void simpleTest2(){
         assertEquals("a OR b OR c",Main.minimaize("a OR b OR c    "));
     }
+    @Test
+    public void simpleTest21(){
+        assertEquals("TRUE",Main.minimaize("a OR b OR TRUE    "));
+    }
 
     @Test
     public void simpleTest3(){

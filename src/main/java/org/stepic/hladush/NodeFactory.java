@@ -6,18 +6,22 @@ package org.stepic.hladush;
  */
 public class NodeFactory {
 
-    public static Node createNode(String value){
+    public static Node createNode(String value) {
         switch (value) {
-            case "NOT":
-                return new NOTNode();
-            case "TRUE":
+//            case "NOT":
+//                return new NOTNode();
+            case TrueNode.VALUE:
                 return TrueNode.getInstance();
-            case "FALSE":
+            case FalseNode.VALUE:
                 return FalseNode.getInstance();
-            case "OR":
+            case ORNode.VALUE:
                 return new ORNode();
-            case "AND":
+            case ANDNode.VALUE:
                 return new ANDNode();
+            case OpenBraceNode.VALUE:
+                return OpenBraceNode.getInstance();
+            case CloseBraceNode.VALUE:
+                return CloseBraceNode.getInstance();
             default:
                 return new ValueNode(value);
         }

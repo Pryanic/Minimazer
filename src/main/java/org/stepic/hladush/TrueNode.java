@@ -5,12 +5,21 @@ package org.stepic.hladush;
  * @since 05.05.17.
  */
 //todo make this singletone
-public class TrueNode extends Node{
-    private static TrueNode instance=new TrueNode();
+public class TrueNode extends ReadOnlyNode {
+    public static final String VALUE = "TRUE";
+
+    private static TrueNode instance = new TrueNode();
+
     private TrueNode() {
-        super(false,"TRUE");
+        super(VALUE);
     }
-    public static Node getInstance(){
+
+    public static Node getInstance() {
         return instance;
+    }
+
+    @Override
+    public String toString() {
+        return getValue();
     }
 }

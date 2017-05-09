@@ -25,11 +25,11 @@ public class EmptyStringTest {
     }
     @Test
     public void spacesRemoverTest_1(){
-        assertEquals("((a AND B) AND C OR D)",Main.minimaize("( (a AND B) AND C OR D )"));
+        assertEquals("a AND b AND c OR d",Main.minimaize("( (a AND b) AND c OR d )"));
     }
 
     @Test
     public void spacesRemoverTest_2(){
-        assertEquals("((a AND B) AND C OR D)OR NOT C",Main.minimaize("( (     a AND B ) AND C OR D   )OR NOT C"));
+        assertEquals("a AND b AND c OR c OR d",Main.minimaize("( (     a AND b ) AND c OR d   )OR  c"));
     }
 }

@@ -53,5 +53,12 @@ public class BraceTest {
                 Main.minimaize("((A AND B)AND (A OR B (((AND)))OR C  )AND (a AND b)AND C)")
         );
     }
+    @Test
+    public void additionalBrace_8(){
+        assertEquals("Expression contains brace around operations is incorrect",
+                Main.minimaize("((A AND B)AND (A OR B (((AND)))OR !c  )AND (a AND b)AND c)")
+        );
+    }
+
 
 }
